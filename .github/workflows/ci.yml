@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  assignment1-swap:
+    name: Assignment 1 – Swap
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+      - name: Build
+        working-directory: os/lab02/01_swap
+        run: make
+      - name: Test
+        working-directory: os/lab02/01_swap
+        run: python3 -m unittest discover -v tests
+
+  assignment1-array-reverse:
+    name: Assignment 1 – Array Reverse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+      - name: Build
+        working-directory: os/lab02/02_array_reverse
+        run: make
+      - name: Test
+        working-directory: os/lab02/02_array_reverse
+        run: python3 -m unittest discover -v tests
+
+  assignment1-matrix-transpose:
+    name: Assignment 1 – Matrix Transpose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+      - name: Build
+        working-directory: os/lab02/03_matrix_transpose
+        run: make
+      - name: Test
+        working-directory: os/lab02/03_matrix_transpose
+        run: python3 -m unittest discover -v tests
+
+  assignment1-list-reverse:
+    name: Assignment 1 – List Reverse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+      - name: Build
+        working-directory: os/lab02/04_list_reverse
+        run: make
+      - name: Test
+        working-directory: os/lab02/04_list_reverse
+        run: python3 -m unittest discover -v tests
+
+  assignment2-interposition:
+    name: Assignment 2 – Interposition
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+      - name: Build
+        working-directory: os/lab04/01_interposition
+        run: make
+      - name: Test
+        working-directory: os/lab04/01_interposition
+        run: python3 -m unittest discover -v tests
+
+  assignment3-regex-replace:
+    name: Assignment 3 – Regex Replace
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3
+
+      - name: Build
+        working-directory: os/lab05/01_regex_replace
+        run: make
+
+      - name: Run tests
+        working-directory: os/lab05/01_regex_replace
+        run: python3 -m unittest discover -v tests

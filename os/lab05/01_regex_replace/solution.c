@@ -3,13 +3,6 @@
 #include <string.h>
 #include <regex.h>
 
-/*
- * Program: regex_replace
- * Usage : ./regex_replace <pattern> <text> <replacement>
- *
- * Replaces every occurrence of <pattern> in <text> with <replacement>
- * and prints the resulting string to stdout.
- */
 int main(int argc, char *argv[]) {
     if (argc != 4) {
         fprintf(stderr, "Usage: %s <pattern> <text> <replacement>\n", argv[0]);
@@ -20,7 +13,6 @@ int main(int argc, char *argv[]) {
     const char *text        = argv[2];
     const char *replacement = argv[3];
 
-    /* Compile the regular expression (extended POSIX syntax). */
     regex_t regex;
     int comp_status = regcomp(&regex, pattern, REG_EXTENDED);
     if (comp_status != 0) {
@@ -33,8 +25,7 @@ int main(int argc, char *argv[]) {
     size_t text_len = strlen(text);
     size_t repl_len = strlen(replacement);
 
-    /* Start with a reasonable buffer size; grow with realloc as needed. */
-    size_t out_cap = text_len + 1;        /* +1 for terminating NUL */
+    size_t out_cap = text_len + 1;
     char  *output  = malloc(out_cap);
     if (!output) {
         perror("malloc");
@@ -42,16 +33,15 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    size_t out_len      = 0;      /* Number of bytes written so far. */
-    const char *cursor  = text;   /* Current scanning position in the source text. */
+    size_t out_len      = 0;
+    const char *cursor  = text;
     regmatch_t match;
 
     while (regexec(&regex, cursor, 1, &match, 0) == 0) {
-        /* Copy text that precedes the match. */
         size_t prefix_len = (size_t)match.rm_so;
         size_t required   = out_len + prefix_len + repl_len + 1;
         if (required > out_cap) {
-            out_cap = required * 2;  /* grow exponentially */
+            out_cap = required * 2;
             char *tmp = realloc(output, out_cap);
             if (!tmp) {
                 perror("realloc");
@@ -64,18 +54,14 @@ int main(int argc, char *argv[]) {
         memcpy(output + out_len, cursor, prefix_len);
         out_len += prefix_len;
 
-        /* Copy the replacement string. */
         memcpy(output + out_len, replacement, repl_len);
         out_len += repl_len;
 
-        /* Avoid infinite loop on zero‑length matches. */
         size_t match_len = (size_t)(match.rm_eo - match.rm_so);
         if (match_len == 0) {
             if (cursor[match.rm_eo] == '\0') {
-                /* End of string reached. */
                 break;
             }
-            /* Copy one character verbatim and advance. */
             if (out_len + 2 > out_cap) {
                 out_cap = (out_len + 2) * 2;
                 char *tmp = realloc(output, out_cap);
@@ -90,12 +76,10 @@ int main(int argc, char *argv[]) {
             output[out_len++] = cursor[match.rm_eo];
             cursor += match.rm_eo + 1;
         } else {
-            /* Advance cursor just past the current match. */
             cursor += match.rm_eo;
         }
     }
 
-    /* Copy whatever is left after the final match. */
     size_t tail_len  = strlen(cursor);
     size_t required  = out_len + tail_len + 1;
     if (required > out_cap) {
@@ -113,10 +97,8 @@ int main(int argc, char *argv[]) {
     out_len += tail_len;
     output[out_len] = '\0';
 
-    /* Print the transformed text. */
     printf("%s\n", output);
 
-    /* Clean up. */
     free(output);
     regfree(&regex);
     return EXIT_SUCCESS;
